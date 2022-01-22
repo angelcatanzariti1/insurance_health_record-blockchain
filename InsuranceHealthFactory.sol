@@ -24,27 +24,27 @@ contract InsuranceFactory is BasicOperations{
     }
 
     //Data structures
-    struct insured{
+    struct insuredData{
         address insuredAddress;
         bool insuredAuthorized;
         address insuredContractAddress;
     }
 
-    struct service{
+    struct serviceData{
         string serviceName;
         uint servicePriceInTokens;
         bool serviceStatus;
     }
 
-    struct lab{
+    struct labData{
         address labContractAddress;
         bool labAuthorized;        
     }
 
     //Mappings and arrays for insured, services and labs
-    mapping(address => insured) public MappingInsured;
-    mapping(string => service) public MappingServices;
-    mapping(address => lab) public MappingLabs;
+    mapping(address => insuredData) public MappingInsured;
+    mapping(string => serviceData) public MappingServices;
+    mapping(address => labData) public MappingLabs;
 
     address[] InsuredAddresses;
     string[] private serviceNames;
@@ -83,11 +83,11 @@ contract InsuranceFactory is BasicOperations{
     //New contract for a lab
     function createLab() public{
         labAddresses.push(msg.sender);
-        address labAdd = address(new LabContract(msg.sender, Insurance));
-        lab memory laboratory = lab(labAdd, true);
-        MappingLabs[msg.sender] = laboratory;
+        address labAddr = address(new LabContract(msg.sender, Insurance));
+        labData memory laboratory_data = labData(labAddr, true);
+        MappingLabs[msg.sender] = laboratory_data;
 
-        emit eventLabCreate(msg.sender, labAdd);
+        emit eventLabCreate(msg.sender, labAddr);
     }
 
 
