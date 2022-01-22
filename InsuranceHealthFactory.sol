@@ -65,7 +65,7 @@ contract InsuranceFactory is BasicOperations{
         _;
     }
 
-    modifier InsuredOrCarrier(address _insuredAddress, address _inputAddress){
+    modifier OnlyInsuredOrCarrier(address _insuredAddress, address _inputAddress){
         require((MappingInsured[_inputAddress].insuredAuthorized) && (_insuredAddress == _inputAddress) || Carrier == _inputAddress,
         "Only carriers or insured are allowed.");
         _;
@@ -80,5 +80,31 @@ contract InsuranceFactory is BasicOperations{
     event eventServiceProvide(address, string);
     event eventServiceDelete(string);
 
+    //New contract for a lab
+    function createLab() public{
+        labAddresses.push(msg.sender);
+        address labAdd = address(new LabContract(msg.sender, Insurance));
+        lab memory laboratory = lab(labAdd, true);
+        MappingLabs[msg.sender] = laboratory;
+
+        emit eventLabCreate(msg.sender, labAdd);
+    }
+
+
+
     
+
+    
+}
+
+
+contract LabContract is BasicOperations{
+
+    address public LabAddress;
+    address CarrierContract;
+    
+    constructor(address _account, address _carrierContractAddress){
+        LabAddress = _account;
+        CarrierContract = _carrierContractAddress;
+    }
 }
