@@ -46,7 +46,7 @@ contract InsuranceFactory is BasicOperations{
     mapping(string => serviceData) public MappingServices;
     mapping(address => labData) public MappingLabs;
 
-    address[] InsuredAddresses;
+    address[] insuredAddresses;
     string[] private serviceNames;
     address[] labAddresses;
 
@@ -92,7 +92,7 @@ contract InsuranceFactory is BasicOperations{
 
     //New contract for an insured
     function createInsured() public{
-        InsuredAddresses.push(msg.sender);
+        insuredAddresses.push(msg.sender);
         address insuredAddr = address(new InsuredHealthRecord(msg.sender, token, Insurance, Carrier));
         MappingInsured[msg.sender] = insuredData(msg.sender, true, insuredAddr);
 
@@ -102,6 +102,11 @@ contract InsuranceFactory is BasicOperations{
     //View list of labs
     function viewLabs() public view OnlyCarrier(msg.sender) returns(address[] memory){
         return labAddresses;
+    }
+
+    //View lñist of insured
+    function viewInsured() public view OnlyCarrier(msg.sender) returns(address[] memory){
+        return insuredAddresses;
     }
 
     
