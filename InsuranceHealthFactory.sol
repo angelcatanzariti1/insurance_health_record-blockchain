@@ -11,7 +11,7 @@ contract InsuranceFactory is BasicOperations{
     //Addresses declarations
     address Insurance;
     address payable public Carrier;
-    address[] InsuredAddresses;
+    
 
     //Instance of token contract
     ERC20Basic private token;
@@ -23,6 +23,32 @@ contract InsuranceFactory is BasicOperations{
         Carrier = msg.sender;
     }
 
+    //Data structures
+    struct insured{
+        address insuredAddress;
+        bool insuredAuthorized;
+        address insuredContractAddress;
+    }
+
+    struct service{
+        string serviceName;
+        uint servicePriceInTokens;
+        bool serviceStatus;
+    }
+
+    struct lab{
+        address labContractAddress;
+        bool labAuthorized;        
+    }
+
+    //Mappings and arrays for insured, services and labs
+    mapping(address => insured) public MappingInsured;
+    mapping(string => service) public MappingServices;
+    mapping(address => lab) public MappingLabs;
+
+    address[] InsuredAddresses;
+    string[] private serviceNames;
+    address[] labAddresses;
     
 
     
