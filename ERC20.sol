@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.4 <0.7.0;
+pragma solidity >=0.4.4 <=0.8.11;
 pragma experimental ABIEncoderV2;
 import "./SafeMath.sol";
 
@@ -21,8 +21,8 @@ contract ERC20Basic is IERC20 {
     string public constant symbol = "JBJ-TOKEN";
     uint8 public constant decimals = 2;
     
-    event Transfer(address indexed from, address indexed to, uint256 tokens);
-    event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
+    //event Transfer(address indexed from, address indexed to, uint256 tokens);
+    //event Approval(address indexed tokenOwner, address indexed spender, uint tokens);
     
     mapping (address => uint) balances;
     mapping(address => mapping (address => uint)) allowed;
@@ -30,7 +30,7 @@ contract ERC20Basic is IERC20 {
     
     using SafeMath for uint256;
     
-    constructor (uint256 total) public{
+    constructor (uint256 total){
         totalSupply_ = total;
         balances[msg.sender] = totalSupply_;
     }
