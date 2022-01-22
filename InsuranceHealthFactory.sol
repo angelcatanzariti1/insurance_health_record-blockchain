@@ -71,5 +71,14 @@ contract InsuranceFactory is BasicOperations{
         _;
     }
 
+    //Events
+    event eventTokenBuy(uint256);
+    event eventLabCreate(address, address);
+    event eventInsuredCreate(address, address);
+    event eventInsuredDelete(address);
+    event eventServiceCreate(string, uint256);
+    event eventServiceProvide(address, string);
+    event eventServiceDelete(string);
+
     
 }
