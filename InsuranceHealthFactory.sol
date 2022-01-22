@@ -80,17 +80,24 @@ contract InsuranceFactory is BasicOperations{
     event eventServiceProvide(address, string);
     event eventServiceDelete(string);
 
+
     //New contract for a lab
     function createLab() public{
         labAddresses.push(msg.sender);
         address labAddr = address(new LabContract(msg.sender, Insurance));
-        labData memory laboratory_data = labData(labAddr, true);
-        MappingLabs[msg.sender] = laboratory_data;
+        MappingLabs[msg.sender] = labData(labAddr, true);
 
         emit eventLabCreate(msg.sender, labAddr);
     }
 
+    //New contract for an insured
+    function createInsured() public{
+        InsuredAddresses.push(msg.sender);
+        address insuredAddr = address(new InsuredHealthRecord(msg.sender, token, Insurance, Carrier));
+        MappingInsured[msg.sender] = insuredData(msg.sender, true, insuredAddr);
 
+        emit eventInsuredCreate(msg.sender, insuredAddr);
+    }
 
     
 
@@ -107,4 +114,30 @@ contract LabContract is BasicOperations{
         LabAddress = _account;
         CarrierContract = _carrierContractAddress;
     }
+}
+
+contract InsuredHealthRecord is BasicOperations{
+
+    enum Status{active,inactive}
+    
+    struct ownerData{
+        address ownerAddress;
+        uint ownerBalance;
+        Status ownerStatus;
+        IERC20 ownerTokens;
+        address insurance;
+        address payable carrier;
+    }
+
+    ownerData owner;
+
+    constructor(address _owner, IERC20 _token, address _insurance, address payable _carrier){
+        owner.ownerAddress = _owner;
+        owner.ownerBalance = 0;
+        owner.ownerStatus = Status.active;
+        owner.ownerTokens = _token;
+        owner.insurance = _insurance;
+        owner.carrier = _carrier;
+    }
+
 }
