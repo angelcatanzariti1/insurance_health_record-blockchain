@@ -68,6 +68,7 @@ contract InsuranceFactory is BasicOperations{
     modifier InsuredOrCarrier(address _insuredAddress, address _inputAddress){
         require((MappingInsured[_inputAddress].insuredAuthorized) && (_insuredAddress == _inputAddress) || Carrier == _inputAddress,
         "Only carriers or insured are allowed.");
+        _;
     }
 
     
