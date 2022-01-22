@@ -49,7 +49,26 @@ contract InsuranceFactory is BasicOperations{
     address[] InsuredAddresses;
     string[] private serviceNames;
     address[] labAddresses;
-    
+
+    //Modifiers (through function) and restrictions for insured and carriers
+    function CheckOnlyInsured(address _insuredAddress) public view{
+        require(MappingInsured[_insuredAddress].insuredAuthorized, "Insured not authorized.");
+    }
+        
+    modifier OnlyInsured(address _insuredAddress){
+        CheckOnlyInsured(_insuredAddress);
+        _;
+    }
+
+    modifier OnlyCarrier(address _carrierAddress){
+        require(Carrier == _carrierAddress, "Carrier address not authorized.");
+        _;
+    }
+
+    modifier InsuredOrCarrier(address _insuredAddress, address _inputAddress){
+        require((MappingInsured[_inputAddress].insuredAuthorized) && (_insuredAddress == _inputAddress) || Carrier == _inputAddress,
+        "Only carriers or insured are allowed.");
+    }
 
     
 }
