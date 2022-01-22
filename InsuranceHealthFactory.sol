@@ -99,7 +99,10 @@ contract InsuranceFactory is BasicOperations{
         emit eventInsuredCreate(msg.sender, insuredAddr);
     }
 
-    
+    //View list of labs
+    function viewLabs() public view OnlyCarrier(msg.sender) returns(address[] memory){
+        return labAddresses;
+    }
 
     
 }
