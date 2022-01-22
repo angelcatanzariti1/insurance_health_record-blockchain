@@ -104,7 +104,7 @@ contract InsuranceFactory is BasicOperations{
         return labAddresses;
     }
 
-    //View lñist of insured
+    //View list of insured
     function viewInsured() public view OnlyCarrier(msg.sender) returns(address[] memory){
         return insuredAddresses;
     }
@@ -138,6 +138,25 @@ contract InsuredHealthRecord is BasicOperations{
     }
 
     ownerData owner;
+
+    struct requestedServicesByInsured{
+        string serviceName;
+        uint servicePriceInTokens;
+        bool serviceStatus;
+    }
+
+    struct requestedServicesByLab{
+        string serviceName;
+        uint servicePriceInTokens;
+        address labAddress;
+    }
+
+    mapping(string => requestedServicesByInsured) insuredServicesHistory;
+    requestedServicesByLab[] insuredLabHistory;
+
+    function viewInsuredLabHistory() public view returns(requestedServicesByLab[] memory){
+        return insuredLabHistory;
+    }
 
     constructor(address _owner, IERC20 _token, address _insurance, address payable _carrier){
         owner.ownerAddress = _owner;
