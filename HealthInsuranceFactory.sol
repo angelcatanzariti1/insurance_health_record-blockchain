@@ -82,8 +82,27 @@ contract HealthInsuranceFactory is BasicOperations{
     event EventServiceCreated(string, uint256);
     event EventServiceDeleted(string);
 
-    
+    //functions
+    function LabCreation() public{
+        LabsAddresses.push(msg.sender);
+        address labAddress = address(new Lab(msg.sender, Insurance));
+        lab memory laboratory = lab(labAddress, true);
+        MappingLabs[msg.sender] = laboratory;
+        emit EventLabCreated(msg.sender, labAddress);
+    }
 
+}
+
+contract Lab is BasicOperations{
+    
+    address public LabAddress;
+    address carrierContract;
+    
+    //constructor
+    constructor(address _account, address _carrierContract){
+        LabAddress = _account;
+        carrierContract = _carrierContract;
+    }
 
 
 }
