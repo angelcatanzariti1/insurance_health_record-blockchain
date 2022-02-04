@@ -26,7 +26,7 @@ contract HealthInsuranceFactory is BasicOperations{
 
     struct service{
         string ServiceName;
-        uint ServiceTokenPrice;
+        uint256 ServiceTokenPrice;
         bool ServiceStatus;
     }
 
@@ -72,6 +72,15 @@ contract HealthInsuranceFactory is BasicOperations{
         "Only clients or carriers allowed.");
         _;
     }
+
+    //events
+    event EventTokenBought(uint256);
+    event EventServiceProvided(address, string, uint256);
+    event EventLabCreated(address, address);
+    event EventClientCreated(address, address);
+    event EventClientDeleted(address);
+    event EventServiceCreated(string, uint256);
+    event EventServiceDeleted(string);
 
     
 
