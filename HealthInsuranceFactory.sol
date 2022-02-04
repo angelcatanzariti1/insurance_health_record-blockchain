@@ -86,15 +86,21 @@ contract HealthInsuranceFactory is BasicOperations{
     function LabCreation() public{
         LabsAddresses.push(msg.sender);
         address labAddress = address(new Lab(msg.sender, Insurance));
-        lab memory laboratory = lab(labAddress, true);
-        MappingLabs[msg.sender] = laboratory;
+        MappingLabs[msg.sender] = lab(labAddress, true);
         emit EventLabCreated(msg.sender, labAddress);
+    }
+
+    function ClientCreation() public{
+        ClientsAddresses.push(msg.sender);
+        address clientAddress = address(new HealthInsuranceRecord(msg.sender, token, Insurance, Carrier));
+        MappingClients[msg.sender] = client(msg.sender, true, clientAddress);
+        emit EventClientCreated(msg.sender, clientAddress);
     }
 
 }
 
 contract Lab is BasicOperations{
-    
+
     address public LabAddress;
     address carrierContract;
     
@@ -103,6 +109,31 @@ contract Lab is BasicOperations{
         LabAddress = _account;
         carrierContract = _carrierContract;
     }
+}
 
+contract HealthInsuranceRecord is BasicOperations{
+
+    enum Status{yes,no}
+    
+    struct Owner{
+        address ownerAddress;
+        uint ownerBalance;
+        Status status;
+        IERC20 tokens;
+        address insurance;
+        address payable carrier;
+    }
+
+    Owner owner;
+
+    //constructor
+    constructor(address _owner, IERC20 _token, address _insurance, address payable _carrier){
+        owner.ownerAddress = _owner;
+        owner.ownerBalance = 0;
+        owner.status = Status.yes;
+        owner.tokens = _token;
+        owner.insurance = _insurance;
+        owner.carrier = _carrier;
+    }
 
 }
