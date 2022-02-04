@@ -6,6 +6,7 @@ import "./ERC20.sol";
 import "./BasicOps.sol";
 
 //contract for the insurance company
+//-----------------------------------------------------------------------------------------------------------------
 contract HealthInsuranceFactory is BasicOperations{
 
     //instance of token contract
@@ -97,8 +98,18 @@ contract HealthInsuranceFactory is BasicOperations{
         emit EventClientCreated(msg.sender, clientAddress);
     }
 
+    function Laboratories() public view ModOnlyCarriers(msg.sender) returns(address[] memory){
+        return LabsAddresses;
+    }
+
+    function Clients() public view ModOnlyCarriers(msg.sender) returns(address[] memory){
+        return ClientsAddresses;
+    }
+
 }
 
+//contract for labs
+//-----------------------------------------------------------------------------------------------------------------
 contract Lab is BasicOperations{
 
     address public LabAddress;
@@ -111,6 +122,8 @@ contract Lab is BasicOperations{
     }
 }
 
+//contract for clients' record
+//-----------------------------------------------------------------------------------------------------------------
 contract HealthInsuranceRecord is BasicOperations{
 
     enum Status{yes,no}
