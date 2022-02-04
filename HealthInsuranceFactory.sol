@@ -49,6 +49,32 @@ contract HealthInsuranceFactory is BasicOperations{
     address[] LabsAddresses;
     address[] ClientsAddresses;
 
+    
+    //modifiers and restrictions on clients and carriers
+    function FuncOnliClients(address _clientAddress) public view{
+        require(MappingClients[_clientAddress].ClientAuthorization == true, "Client address not authorized.");
+    }
+    modifier ModOnlyClients(address _clientAddress){
+        FuncOnliClients(_clientAddress);
+        _;
+    }
+
+    function FuncOnlyCarriers(address _carrierAddress) public view{
+        require(Carrier == _carrierAddress, "Carrier address not authorized.");
+    }
+    modifier ModOnlyCarriers(address _carrierAddress){
+        FuncOnlyCarriers(_carrierAddress);
+        _;
+    }
+
+    modifier ModClientOrCarrier(address _clientAddress, address _enteredAddress){
+        require((MappingClients[_clientAddress].ClientAuthorization == true && _clientAddress == _enteredAddress) || Carrier == _enteredAddress,
+        "Only clients or carriers allowed.");
+        _;
+    }
+
+    
+
 
 
 }
