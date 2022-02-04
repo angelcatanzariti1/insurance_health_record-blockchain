@@ -126,27 +126,49 @@ contract Lab is BasicOperations{
 //-----------------------------------------------------------------------------------------------------------------
 contract HealthInsuranceRecord is BasicOperations{
 
-    enum Status{yes,no}
+    enum status{yes,no}
     
-    struct Owner{
+    struct ownerData{
         address ownerAddress;
         uint ownerBalance;
-        Status status;
+        status ownerStatus;
         IERC20 tokens;
         address insurance;
         address payable carrier;
     }
 
-    Owner owner;
+    ownerData owner;
+
+    //services requested by clients
+    struct requestedServices{
+        string serviceName;
+        uint256 servicePrice;
+        bool serviceStatus;
+    }
+
+    //services assigned to a lab
+    struct requestedServicesLab{
+        string serviceName;
+        uint256 servicePrice;
+        address labAddress;
+    }
+
+    //mappings
+    mapping(string => requestedServices) MappingClientHistory;
+    requestedServicesLab[] ClientsLabHistory;
 
     //constructor
     constructor(address _owner, IERC20 _token, address _insurance, address payable _carrier){
         owner.ownerAddress = _owner;
         owner.ownerBalance = 0;
-        owner.status = Status.yes;
+        owner.ownerStatus = status.yes;
         owner.tokens = _token;
         owner.insurance = _insurance;
         owner.carrier = _carrier;
+    }
+
+    function viewClientsLabHistory() public view returns(requestedServicesLab[] memory){
+        return ClientsLabHistory;
     }
 
 }
