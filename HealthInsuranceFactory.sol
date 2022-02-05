@@ -201,6 +201,15 @@ contract Lab is BasicOperations{
         LabAddress = _account;
         carrierContract = _carrierContract;
     }
+
+    function getServicePrice(string memory _serviceName) public view returns(uint256){
+        //TODO: return service price
+        return 0;
+    }
+
+    function provideService(address _client, string memory _serviceName) public{
+        //TODO: implement
+    }
 }
 
 //contract for clients' record
@@ -250,6 +259,8 @@ contract HealthInsuranceRecord is BasicOperations{
 
     event EventSelfDestruct(address);
     event EventReturnTokens(address, uint256);
+    event EventServicePayed(address, string, uint256);
+    event EventServiceRequestToLab(address, address, string);
 
     modifier ModOwnerOnly(address _address){
         require(_address == owner.ownerAddress, "You need to be the insurance owner!.");
@@ -294,5 +305,24 @@ contract HealthInsuranceRecord is BasicOperations{
 
         emit EventReturnTokens(msg.sender, _numTokens);
     }
+
+    function requestService(string memory _serviceName) public ModOwnerOnly(msg.sender){
+        require(HealthInsuranceFactory(owner.insurance).serviceStatus(_serviceName), "Service not available by carrier.");
+        uint256 tokensPay = HealthInsuranceFactory(owner.insurance).getServicePrice(_serviceName);
+        require(tokensPay <= balanceOf(), "You need to buy more tokens to request this srvice.");
+        owner.tokens.transfer(owner.insurance, tokensPay);
+        MappingClientHistory[_serviceName] = requestedServices(_serviceName, tokensPay, true);
+        emit EventServicePayed(msg.sender, _serviceName, tokensPay);
+    }
+
+    function requestServiceToLab(address _labAddress, string memory _serviceName) public payable ModOwnerOnly(msg.sender){
+        Lab labContract = Lab(_labAddress);
+        require(msg.value == labContract.getServicePrice(_serviceName) * 1 ether, "Wrong payment amount.");
+        labContract.provideService(msg.sender, _serviceName);
+        payable(labContract.LabAddress()).transfer(labContract.getServicePrice(_serviceName) * 1 ether);
+        ClientsLabHistory.push(requestedServicesLab(_serviceName, labContract.getServicePrice(_serviceName), _labAddress));
+        emit EventServiceRequestToLab(_labAddress, msg.sender, _serviceName);
+    }
+
 
 }
