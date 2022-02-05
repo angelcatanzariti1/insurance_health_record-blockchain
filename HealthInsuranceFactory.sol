@@ -195,11 +195,41 @@ contract Lab is BasicOperations{
 
     address public LabAddress;
     address carrierContract;
-    
+
     //constructor
     constructor(address _account, address _carrierContract){
         LabAddress = _account;
         carrierContract = _carrierContract;
+    }
+
+    mapping(address => string) public MappingServicesRequested;
+    
+    //service request to labs
+    address[] public ServiceRequests;
+
+    struct resultsServices{
+        string diagnosis;
+        string IPFS_code;
+    }
+    mapping(address => resultsServices) MappingResultsServicesLab;
+
+    //lab services
+    string[] labServicesNames;
+
+    struct labServices{
+        string LabServiceName;
+        uint LabServicePrice;
+        bool LabServiceStatus;
+
+    }
+    mapping(string => labServices) public MappingLabServices;
+
+    event EventServiceLabStatus(string, uint);
+    event EventServiceLabProvide(address, string);
+    
+    modifier ModLabOnly(address _address){
+        require(_address == LabAddress, "Not allowed.");
+        _;
     }
 
     function getServicePrice(string memory _serviceName) public view returns(uint256){
