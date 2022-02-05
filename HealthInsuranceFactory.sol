@@ -160,6 +160,30 @@ contract HealthInsuranceFactory is BasicOperations{
         return activeServices;
     }
 
+    /*
+    ------------------------------------------------------
+    ----------------------- TOKENS -----------------------
+    ------------------------------------------------------
+    */
+
+    function buyTokens(address _client, uint _numTokens) public payable ModOnlyClients(_client){
+        uint256 balance = balanceOf();
+        require(_numTokens <= balance, "Buy a lower amount of tokens.");
+        require(_numTokens > 0, "Number of tokens to buy must be > 0.");
+
+        token.transfer(msg.sender, _numTokens);
+
+        emit EventTokenBought(_numTokens);
+    }
+
+    function balanceOf() public view returns(uint256 tokens){
+        return (token.balanceOf(Insurance));
+    }
+
+    function generateTokens(uint _numTokens) public ModOnlyCarriers(msg.sender){
+        token.increaseTotalSuply(_numTokens);
+    }
+
 
 }
 
