@@ -232,6 +232,12 @@ contract Lab is BasicOperations{
         _;
     }
 
+    function createLabService(string memory _serviceName, uint _price) public ModLabOnly(msg.sender){
+        MappingLabServices[_serviceName] = labServices(_serviceName, _price, true);
+        labServicesNames.push(_serviceName);
+        emit EventServiceLabStatus(_serviceName, _price);
+    }
+
     function getLabServices() public view returns(string[]memory){
         return(labServicesNames);
     }
