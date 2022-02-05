@@ -12,6 +12,11 @@ contract HealthInsuranceFactory is BasicOperations{
     //instance of token contract
     ERC20Basic private token;
 
+
+    //addresses declaration
+    address Insurance;
+    address payable public Carrier;
+
     //structures
     constructor(){
         token = new ERC20Basic(100);
@@ -35,10 +40,6 @@ contract HealthInsuranceFactory is BasicOperations{
         address LabContractAddress;
         bool LabValidation;
     }
-
-    //addresses declaration
-    address Insurance;
-    address payable public Carrier;
 
     //mappings for clients, services and labs
     mapping(address => client) public MappingClients;
