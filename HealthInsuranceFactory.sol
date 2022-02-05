@@ -148,6 +148,18 @@ contract HealthInsuranceFactory is BasicOperations{
         return MappingServices[_serviceName].ServiceTokenPrice;
     }
 
+    function getActiveServices() public view returns(string[] memory){
+        string[] memory activeServices = new string[](ServicesNames.length);
+        uint counter = 0;
+        for(uint i = 0; i < ServicesNames.length; i++){
+            if(serviceStatus(ServicesNames[i])){
+                activeServices[counter] = ServicesNames[i];
+                counter++;
+            }
+        }
+        return activeServices;
+    }
+
 
 }
 
