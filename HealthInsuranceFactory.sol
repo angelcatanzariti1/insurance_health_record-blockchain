@@ -126,6 +126,29 @@ contract HealthInsuranceFactory is BasicOperations{
         emit EventClientDeleted(_clientAddress);
     }
 
+    function newService(string memory _serviceName, uint256 _servicePrice) public ModOnlyCarriers(msg.sender){
+        MappingServices[_serviceName] = service(_serviceName, _servicePrice, true);
+        ServicesNames.push(_serviceName);
+        emit EventServiceCreated(_serviceName, _servicePrice);
+
+    }
+
+    function deleteService(string memory _serviceName) public ModOnlyCarriers(msg.sender){
+        require(serviceStatus(_serviceName) == true, "Service doesn't exist.");
+        MappingServices[_serviceName]. ServiceStatus = false;
+        emit EventServiceDeleted(_serviceName);        
+    }
+
+    function serviceStatus(string memory _serviceName) public view returns(bool){
+        return MappingServices[_serviceName].ServiceStatus;
+    }
+
+    function getServicePrice(string memory _serviceName) public view returns(uint256 tokens){
+        require(serviceStatus(_serviceName) == true, "Service doesn't exist.");
+        return MappingServices[_serviceName].ServiceTokenPrice;
+    }
+
+
 }
 
 //contract for labs
