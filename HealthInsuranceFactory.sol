@@ -171,4 +171,12 @@ contract HealthInsuranceRecord is BasicOperations{
         return ClientsLabHistory;
     }
 
+    function viewClientHistory(string memory _service) public view returns(string memory serviceName, uint256 servicePrice){
+        return (MappingClientHistory[_service].serviceName, MappingClientHistory[_service].servicePrice);
+    }
+
+    function viewClientServiceStatus(string memory _service) public view returns(bool){
+        return MappingClientHistory[_service].serviceStatus;
+    }
+
 }
