@@ -232,13 +232,21 @@ contract Lab is BasicOperations{
         _;
     }
 
+    function getLabServices() public view returns(string[]memory){
+        return(labServicesNames);
+    }
+
     function getServicePrice(string memory _serviceName) public view returns(uint256){
-        //TODO: return service price
-        return 0;
+        return MappingLabServices[_serviceName].LabServicePrice;
     }
 
     function provideService(address _client, string memory _serviceName) public{
-        //TODO: implement
+        HealthInsuranceFactory IF = HealthInsuranceFactory(carrierContract);
+        IF.FuncOnliClients(_client);
+        require(MappingLabServices[_serviceName].LabServiceStatus);
+        MappingServicesRequested[_client] = _serviceName;
+        ServiceRequests.push(_client);
+        emit EventServiceLabProvide(_client, _serviceName);
     }
 }
 
