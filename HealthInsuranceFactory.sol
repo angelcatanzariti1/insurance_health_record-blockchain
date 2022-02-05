@@ -106,6 +106,20 @@ contract HealthInsuranceFactory is BasicOperations{
         return ClientsAddresses;
     }
 
+    function viewClientHistory(address _clientAddress, address _consultantAddress) public view ModClientOrCarrier(_clientAddress, _consultantAddress) returns(string memory){
+        string memory history = "";
+        address clientContract = MappingClients[_clientAddress].ContractAddress;
+
+        for(uint i = 0; i < ServicesNames.length; i++){
+            if(MappingServices[ServicesNames[i]].ServiceStatus && HealthInsuranceRecord(clientContract).viewClientServiceStatus(ServicesNames[i])){
+                (string memory serviceName, uint servicePrice) = HealthInsuranceRecord(clientContract).viewClientHistory(ServicesNames[i]);
+                history = string(abi.encodePacked(history, "(", serviceName, ", ", uint2str(servicePrice), ") ------"));
+            } 
+        }
+
+        return history;
+    }
+
 }
 
 //contract for labs
@@ -171,7 +185,7 @@ contract HealthInsuranceRecord is BasicOperations{
         return ClientsLabHistory;
     }
 
-    function viewClientHistory(string memory _service) public view returns(string memory serviceName, uint256 servicePrice){
+    function viewClientHistory(string memory _service) public view returns(string memory serviceName, uint servicePrice){
         return (MappingClientHistory[_service].serviceName, MappingClientHistory[_service].servicePrice);
     }
 
