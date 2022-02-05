@@ -185,6 +185,8 @@ contract HealthInsuranceFactory is BasicOperations{
     }
 
 
+
+
 }
 
 //contract for labs
@@ -247,6 +249,7 @@ contract HealthInsuranceRecord is BasicOperations{
     }
 
     event EventSelfDestruct(address);
+    event EventReturnTokens(address, uint256);
 
     modifier ModOwnerOnly(address _address){
         require(_address == owner.ownerAddress, "You need to be the insurance owner!.");
@@ -268,6 +271,28 @@ contract HealthInsuranceRecord is BasicOperations{
     function DeleteClient() public ModOwnerOnly(msg.sender){
         emit EventSelfDestruct(msg.sender);
         selfdestruct(msg.sender);
+    }
+
+    function buyTokens(uint _numTokens) public payable ModOwnerOnly(msg.sender){
+        require(_numTokens > 0, "You need to buy a number of tokens greaer than 0.");
+        uint cost = calculateTokensPrice(_numTokens);
+        require(msg.value >= cost, "You don't have enough ETH to buy this amount of tokens.");
+        uint returnValue = msg.value - cost;
+        msg.sender.transfer(returnValue);
+        HealthInsuranceFactory(owner.insurance).buyTokens(msg.sender, _numTokens);
+    }
+
+    function balanceOf() public view ModOwnerOnly(msg.sender) returns(uint256 _balance){
+        return(owner.tokens.balanceOf(address(this)));
+    }
+
+    function returnTokens(uint _numTokens) public payable ModOwnerOnly(msg.sender){
+        require(_numTokens > 0, "You need to return a number of tokens greaer than 0.");
+        require(_numTokens <= balanceOf(), "You don't have enough tokens to return that amount.");
+        owner.tokens.transfer(owner.carrier, _numTokens);
+        msg.sender.transfer(calculateTokensPrice(_numTokens));
+
+        emit EventReturnTokens(msg.sender, _numTokens);
     }
 
 }
