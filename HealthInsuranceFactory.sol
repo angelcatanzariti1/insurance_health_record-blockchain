@@ -120,6 +120,12 @@ contract HealthInsuranceFactory is BasicOperations{
         return history;
     }
 
+    function deleteClient(address _clientAddress) public ModOnlyCarriers(msg.sender){
+        MappingClients[_clientAddress].ClientAuthorization = false;
+        HealthInsuranceRecord(MappingClients[_clientAddress].ContractAddress).DeleteClient;
+        emit EventClientDeleted(_clientAddress);
+    }
+
 }
 
 //contract for labs
@@ -181,6 +187,13 @@ contract HealthInsuranceRecord is BasicOperations{
         owner.carrier = _carrier;
     }
 
+    event EventSelfDestruct(address);
+
+    modifier ModOwnerOnly(address _address){
+        require(_address == owner.ownerAddress, "You need to be the insurance owner!.");
+        _;
+    }
+
     function viewClientsLabHistory() public view returns(requestedServicesLab[] memory){
         return ClientsLabHistory;
     }
@@ -191,6 +204,11 @@ contract HealthInsuranceRecord is BasicOperations{
 
     function viewClientServiceStatus(string memory _service) public view returns(bool){
         return MappingClientHistory[_service].serviceStatus;
+    }
+
+    function DeleteClient() public ModOwnerOnly(msg.sender){
+        emit EventSelfDestruct(msg.sender);
+        selfdestruct(msg.sender);
     }
 
 }
