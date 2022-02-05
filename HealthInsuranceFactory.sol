@@ -254,6 +254,16 @@ contract Lab is BasicOperations{
         ServiceRequests.push(_client);
         emit EventServiceLabProvide(_client, _serviceName);
     }
+
+    function loadResults(address _clientAddress, string memory _diagnosis, string memory _IPFScode) public ModLabOnly(msg.sender){
+        MappingResultsServicesLab[_clientAddress] = resultsServices(_diagnosis, _IPFScode);
+    }
+
+    function getResults(address _clientAddress) public view returns(string memory _diagnosis, string memory _IPFScode){
+        _diagnosis = MappingResultsServicesLab[_clientAddress].diagnosis;
+        _IPFScode = MappingResultsServicesLab[_clientAddress].IPFS_code;
+        return(_diagnosis, _IPFScode);
+    }
 }
 
 //contract for clients' record
